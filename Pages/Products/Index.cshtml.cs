@@ -32,26 +32,11 @@ namespace Shoping.Pages.Products
         {
             ViewData["header"] = "Products";
 
-            //get all categories from Categories table without Product table
             IQueryable<string> categoryQuery = from m in _context.Category
                                                select m.Name;
-
-            var products = from m in _context.Product.Include(p => p.Category)
-                           select m;
-
-            if (!string.IsNullOrEmpty(SearchString))
-            {
-                products = products.Where(p => p.Name.Contains(SearchString));
-            }
-
-            if (!string.IsNullOrEmpty(ProductCategory))
-            {
-                products = products.Where(p => p.Category.Name == ProductCategory);
-            }
             Categories = new SelectList(await categoryQuery.Distinct().ToListAsync());
-            Product = await products.ToListAsync();
 
-            /*if (_context.Product != null)
+            if (_context.Product != null)
             {
                 if (string.IsNullOrEmpty(SearchString) && string.IsNullOrEmpty(ProductCategory))
                 {
@@ -59,7 +44,16 @@ namespace Shoping.Pages.Products
                     .Include(p => p.Category).ToListAsync();
                 }
 
-                if (!string.IsNullOrEmpty(SearchString))
+                if (!string.IsNullOrEmpty(SearchString) && !string.IsNullOrEmpty(ProductCategory))
+                {
+                    Product = await _context.Product
+                    .Include(p => p.Category)
+                    .Where(p => p.Category.Name == ProductCategory)
+                    .Where(p => p.Name.Contains(SearchString))
+                    .ToListAsync();
+                }
+
+                if (!string.IsNullOrEmpty(SearchString) && string.IsNullOrEmpty(ProductCategory))
                 {
                     Product = await _context.Product
                     .Include(p => p.Category)
@@ -67,7 +61,7 @@ namespace Shoping.Pages.Products
                     .ToListAsync();
                 }
 
-                if (!string.IsNullOrEmpty(ProductCategory))
+                if (string.IsNullOrEmpty(SearchString) && !string.IsNullOrEmpty(ProductCategory))
                 {
                     Product = await _context.Product
                     .Include(p => p.Category)
@@ -75,8 +69,7 @@ namespace Shoping.Pages.Products
                     .ToListAsync();
                 }
 
-
-            }*/
+            }
         }
     }
 }
