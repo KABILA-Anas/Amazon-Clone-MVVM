@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Shoping.Data;
 using Shoping.Models;
@@ -32,44 +34,40 @@ namespace Shoping.Pages.Products
         {
             ViewData["header"] = "Products";
 
+            //get all categories from Categories table without Product table
             IQueryable<string> categoryQuery = from m in _context.Category
                                                select m.Name;
-            Categories = new SelectList(await categoryQuery.Distinct().ToListAsync());
 
-            if (_context.Product != null)
+            IQueryable<Product> products = from m in _context.Product.Include(p => p.Category)
+                           select m;
+
+            if (!string.IsNullOrEmpty(SearchString))
             {
-                if (string.IsNullOrEmpty(SearchString) && string.IsNullOrEmpty(ProductCategory))
-                {
-                    Product = await _context.Product
-                    .Include(p => p.Category).ToListAsync();
-                }
-
-                if (!string.IsNullOrEmpty(SearchString) && !string.IsNullOrEmpty(ProductCategory))
-                {
-                    Product = await _context.Product
-                    .Include(p => p.Category)
-                    .Where(p => p.Category.Name == ProductCategory)
-                    .Where(p => p.Name.Contains(SearchString))
-                    .ToListAsync();
-                }
-
-                if (!string.IsNullOrEmpty(SearchString) && string.IsNullOrEmpty(ProductCategory))
-                {
-                    Product = await _context.Product
-                    .Include(p => p.Category)
-                    .Where(p => p.Name.Contains(SearchString))
-                    .ToListAsync();
-                }
-
-                if (string.IsNullOrEmpty(SearchString) && !string.IsNullOrEmpty(ProductCategory))
-                {
-                    Product = await _context.Product
-                    .Include(p => p.Category)
-                    .Where(p => p.Category.Name == ProductCategory)
-                    .ToListAsync();
-                }
-
+                products = products.Where(p => p.Name.Contains(SearchString));
             }
+
+            if (!string.IsNullOrEmpty(ProductCategory))
+            {
+                products = products.Where(p => p.Category.Name == ProductCategory);
+            }
+            Categories = new SelectList(await categoryQuery.Distinct().ToListAsync());
+            Product = await products.ToListAsync();
+
+        }
+
+        //post method for adding product to cart
+        public async Task<IActionResult> OnPostAddToCartAsync(int productId)
+        {
+            //get cart from session or create new cart using serialization
+            var item = HttpContext.Session.GetString("Cart");
+            Cart cart = item == null ? new Cart() : JsonSerializer.Deserialize<Cart>(item);
+            //add product to cart
+            cart.AddItem(productId);
+            //save cart to session
+            HttpContext.Session.SetString("Cart", JsonSerializer.Serialize(cart));
+
+            //redirect to cart page
+            return RedirectToPage("/Carts/Index");
         }
     }
 }

@@ -1,0 +1,28 @@
+﻿@page
+@model Shoping.Pages.Carts.IndexModel
+@{
+}
+
+<h2>Cart Page</h2>
+
+<table>
+	<tr>
+		<th>
+			Product Id
+		</th>
+		<th>
+			Quantity
+		</th>
+	</tr>
+	@foreach (var item in @ViewBag.Items)
+	{
+		<tr>
+			<td>
+				@item.ProductId
+			</td>
+			<td>
+				@item.Quantity
+			</td>
+		</tr>
+	}
+</table>

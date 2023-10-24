@@ -14,8 +14,8 @@ namespace Shoping.Data
         {
         }
 
-        public DbSet<Shoping.Models.Category> Category { get; set; } = default!;
-        public DbSet<Shoping.Models.Product> Product { get; set; } = default!;
+        public DbSet<Category> Category { get; set; } = default!;
+        public DbSet<Product> Product { get; set; } = default!;
 
     }
 }

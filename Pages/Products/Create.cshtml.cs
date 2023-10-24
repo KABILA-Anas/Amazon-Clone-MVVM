@@ -60,5 +60,18 @@ namespace Shoping.Pages.Products
 
             return RedirectToPage("./Index");
         }
+
+        /*public IActionResult AddToCart(int productId)
+        {
+            //get cart from session or create new cart using serialization
+            var item = HttpContext.Session.GetString("Cart");
+            Cart cart = item == null ? new Cart() : JsonSerializer.Deserialize<Cart>(item);
+            //add product to cart
+            cart.AddItem(productId);
+            //save cart to session
+            HttpContext.Session.SetString("Cart", JsonSerializer.Serialize(cart));
+            //redirect to index
+            return RedirectToAction("Index", "Cart");
+        }*/
     }
 }

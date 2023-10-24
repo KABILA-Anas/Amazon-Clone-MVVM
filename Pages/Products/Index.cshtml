@@ -5,19 +5,21 @@
     ViewData["Title"] = "Index";
 }
 
-<div-- class="flex justify-center">
+<div class="flex justify-center">
     <!--div class="basis-1/4">
         <button class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded">
             <a asp-page="Create">Create New Product</a>
         </button>
     </div-->
-    <div class="basis-3/4">
+    <div>
         <form>
-            <div>
-                <select asp-for="ProductCategory" asp-items="Model.Categories">
+            <div class="grid grid-cols-6 gap-4">
+            <div class="col-start-2 col-end-3">
+                <select asp-for="ProductCategory" asp-items="Model.Categories" class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option value="">All</option>
                 </select>
             </div>
+            <div class="col-start-3 col-end-6">
             <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -28,6 +30,8 @@
                 <input type="search" id="default-search" asp-for="SearchString" class="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for Clothes, Books...">
                 <button type="submit" class="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
             </div>
+</div>
+			</div>
         </form>
     </div>
 </div>
@@ -39,31 +43,43 @@
         <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             @foreach (var item in Model.Product)
             {
-                <div class="group relative">
-                    <div class="shadow-xl shadow-inner rounded-md hover:shadow-2xl">
-                        <div class="shadow-2xlaspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
-                            <img src="/images/@item.Image" alt="Front of men&#039;s Basic Tee in black." class="h-full w-full object-cover object-center lg:h-full lg:w-full">
-                        </div>
-                        <div class="mt-4 flex justify-between">
-                            <div>
-                                <h3 class="text-sm text-gray-700">
-                                    <a href="#">
-                                        <span aria-hidden="true" class="absolute inset-0"></span>
-                                        @item.Name
-                                    </a>
-                                </h3>
+                    <div class="group my-10 flex w-full max-w-xs flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-md">
+                        <a class="relative mx-3 mt-3 flex h-60 overflow-hidden rounded-xl" href="#">
+                            <img class="peer absolute top-0 right-0 h-full w-full object-cover" src="/images/@item.Image" alt="product image" />
+                            <!--<img class="peer absolute top-0 -right-96 h-full w-full object-cover transition-all delay-100 duration-1000 hover:right-0 peer-hover:right-0" src="https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8c25lYWtlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60" alt="product image" />-->
+                            <!-- <div class="absolute  bottom-0 mb-4 flex space-x-4 w-full justify-center">
+                              <div class="rounded-full h-3 w-3 bg-gray-200 border-2 border-white"></div>
+                              <div class="rounded-full h-3 w-3 bg-gray-200 border-2 border-white"></div>
+                              <div class="rounded-full h-3 w-3 bg-gray-200 border-2 border-white"></div>
+                            </div> -->
+                            <!--<svg class="pointer-events-none absolute inset-x-0 bottom-5 mx-auto text-3xl text-white  transition-opacity group-hover:animate-ping group-hover:opacity-30 peer-hover:opacity-0" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 32 32"><path fill="currentColor" d="M2 10a4 4 0 0 1 4-4h20a4 4 0 0 1 4 4v10a4 4 0 0 1-2.328 3.635a2.996 2.996 0 0 0-.55-.756l-8-8A3 3 0 0 0 14 17v7H6a4 4 0 0 1-4-4V10Zm14 19a1 1 0 0 0 1.8.6l2.7-3.6H25a1 1 0 0 0 .707-1.707l-8-8A1 1 0 0 0 16 17v12Z" /></svg>-->
+                            <!-- <span class="absolute top-0 left-0 m-2 rounded-full bg-black px-2 text-center text-sm font-medium text-white">39% OFF</span> -->
+                        </a>
+                        <div class="mt-auto px-5 pb-5">
+                            <a href="#">
+                                <h5 class="text-xl tracking-tight text-slate-900">@item.Name</h5>
                                 <p class="mt-1 text-sm text-gray-500">
-                                    @item.Category.Name
+                                @item.Category.Name
+                                </p>
+                            </a>
+                            <div class="mt-2 mb-5 flex items-center justify-between">
+                                <p>
+                                    <span class="text-3xl font-bold text-slate-900">$@item.Price</span>
+                                    <!--<span class="text-sm text-slate-900 line-through">$699</span>-->
                                 </p>
                             </div>
-                            <p class="text-sm font-medium text-gray-900">
-                                $@item.Price
-                            </p>
+                        <form asp-controller="Cart" asp-action="AddToCart">
+                            <input type="hidden" name="productId" value="@item.Id" />
+                            <button type="submit" class="flex items-center justify-center rounded-md bg-slate-900 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Add to cart
+                            </button>
+                        </form>
                         </div>
                     </div>
-                </div>
             }
-            <!-- More products... -->
         </div>
     </div>
 </div>
